@@ -194,6 +194,8 @@ def inverse_kinematic(x,y,z,roll,pitch,p_direction='bio',p_step=1):
     
     返回:
     两组逆解,注意，用第一组解就够了
+
+    坐标: 朝前为X, 朝左为Y, 朝上为Z, 右手定则
     """
     alpha1=999
     alpha2=-999

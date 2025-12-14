@@ -2,6 +2,8 @@ from zlink import ZLink
 from simulator import Simulator
 from robot import Robot
 
+import numpy as np
+
 import time
 
 
@@ -72,9 +74,22 @@ def test_overlap():
     robot.send_command([0,90,30,30,0],time='1000')
     robot.send_command([0,90,30,60,0],time='1000')
 
+from kinematic import inverse_kinematic
+
+def test_ik():
+    uart=ZLink('COM11',115200)
+    sim = Simulator()
+    robot = Robot(sim, uart)
+
+    time.sleep(2)
+    ret,_joint_angles,best_alpha=inverse_kinematic(0, 360, 100, 0, 0)
+    if ret:
+        robot.send_command(_joint_angles[0],time='1000')
+    else:
+        print('not ret')
 
 if __name__ == '__main__':
-    test_reset()
+    test_ik()
     
     while True:
         pass

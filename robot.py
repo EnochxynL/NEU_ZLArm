@@ -22,6 +22,13 @@ class Robot:
         P: PWM脉宽，0500-2500
         T: 时间（毫秒），0000-9999
         !: 断句
+
+        [-180, 180]
+        [0, 180]
+        []
+        []
+        []
+
         '''
         self.sim.step_sim(joint_angles)
         self.uart.send_command(joint_angles, time)

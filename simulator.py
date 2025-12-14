@@ -56,7 +56,7 @@ class Simulator:
                     #转换
                     #注意时弧度制
                     _joint_angles=np.deg2rad(_joint_angles)
-                    print('仿真初始化角度（弧度制）：',_joint_angles)
+                    print('仿真角度（弧度制）：',_joint_angles)
                     joint_angles=[0,0,0,0,0]
                     joint_angles[0]=-_joint_angles[0]
                     joint_angles[1]=-_joint_angles[1]
