@@ -1,6 +1,5 @@
 import numpy as np
-
-
+import math
 
 def extract_cartesian(input_string):
     try:
@@ -49,15 +48,15 @@ def euler_to_rotation_matrix(roll, pitch, yaw):
     返回: 4x4旋转矩阵
     '''
     R_x = np.array([[1, 0, 0,0],
-                    [0, np.cos(roll), -np.sin(roll),0],
-                    [0, np.sin(roll), np.cos(roll),0],
+                    [0, math.cos(roll), -math.sin(roll),0],
+                    [0, math.sin(roll), math.cos(roll),0],
                     [0,0,0,1]])
-    R_y = np.array([[np.cos(pitch), 0, np.sin(pitch),0],
+    R_y = np.array([[math.cos(pitch), 0, math.sin(pitch),0],
                     [0, 1, 0,0],
-                    [-np.sin(pitch), 0, np.cos(pitch),0],
+                    [-math.sin(pitch), 0, math.cos(pitch),0],
                     [0,0,0,1]])
-    R_z = np.array([[np.cos(yaw), -np.sin(yaw), 0,0],
-                    [np.sin(yaw), np.cos(yaw), 0,0],
+    R_z = np.array([[math.cos(yaw), -math.sin(yaw), 0,0],
+                    [math.sin(yaw), math.cos(yaw), 0,0],
                     [0, 0, 1,0],
                     [0,0,0,1]])
     R = np.dot(np.dot(R_x, R_y),R_z)
@@ -67,12 +66,12 @@ def rotation_matrix_to_euler(R):
     sy = np.sqrt(R[0,0]**2 + R[1,0]**2)
     singular = sy < 1e-6
     if not singular:
-        x = np.arctan2(R[2,1], R[2,2])
-        y = np.arctan2(-R[2,0], sy)
-        z = np.arctan2(R[1,0], R[0,0])
+        x = math.atan2(R[2,1], R[2,2])
+        y = math.atan2(-R[2,0], sy)
+        z = math.atan2(R[1,0], R[0,0])
     else:
-        x = np.arctan2(-R[1,2], R[1,1])
-        y = np.arctan2(-R[2,0], sy)
+        x = math.atan2(-R[1,2], R[1,1])
+        y = math.atan2(-R[2,0], sy)
         z = 0
     return np.array([x, y, z])
 
