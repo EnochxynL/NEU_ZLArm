@@ -1,4 +1,5 @@
-from zlink import ZLink, Hardware
+from zlink import ZLink
+from hardware import Hardware
 from simulator import Simulator
 from robot import Robot
 
@@ -93,7 +94,7 @@ def test_ik():
         print('not ret')
 
 if __name__ == '__main__':
-    test_ik()
+    test_reset()
     
     while True:
         pass

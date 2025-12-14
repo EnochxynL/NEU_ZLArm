@@ -1,5 +1,5 @@
 from simulator import Simulator
-from zlink import Hardware
+from hardware import Hardware
 
 class Robot:
     def __init__(self, sim: Simulator, hard: Hardware):
