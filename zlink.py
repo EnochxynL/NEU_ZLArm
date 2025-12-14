@@ -1,6 +1,4 @@
-import serial.tools.list_ports
 import time
-from simulator import Simulator
 
 DEFAULT_CMD = '#000P1500T1000!#001P2150T1000!#002P2300T1000!#003P1000T1000!#004P1500T1000!#005P1500T1000!'
 
@@ -130,13 +128,14 @@ class Hardware:
         time.sleep(1)
         self.set_grapper_pwm(1300)
         time.sleep(0.01)
-        
-    def get_serial_port(self):
-        port_list = []
-        portlist  = list(serial.tools.list_ports.comports())
-        for port in portlist:
-            port_list.append(port.device)
-        return port_list 
+
+import serial.tools.list_ports  
+def get_serial_port():
+    port_list = []
+    portlist  = list(serial.tools.list_ports.comports())
+    for port in portlist:
+        port_list.append(port.device)
+    return port_list 
     
 def test_send():
     uart=Hardware('COM3',115200)
