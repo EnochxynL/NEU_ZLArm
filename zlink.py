@@ -46,6 +46,8 @@ class ZLink:
             print("串口未成功打开")
             return False
         
+    def is_open(self):
+        return self.ser.isOpen()
     def close_port(self):
         self.ser.close()
     def send_data(self,data):
@@ -90,9 +92,9 @@ class ZLink:
         if self.DEBUG:
             print(command_string)
         # 串口发送控制
-        if self.ser.isOpen():
+        if self.is_open():
             self.count+=1
-            self.ser.write(command_string.encode('utf-8'))
+            self.send_data(command_string.encode('utf-8'))
     
     def set_grapper_pwm(self,pwm,_time='0500'):
         time.sleep(0.01)
@@ -101,8 +103,8 @@ class ZLink:
         if self.DEBUG:
             print(command_string)
         # 串口发送控制
-        if self.ser.isOpen():
-            self.ser.write(command_string.encode('utf-8'))
+        if self.is_open():
+            self.send_data(command_string.encode('utf-8'))
     
     def servo_reset(self):
         self.send_command([0,90,0,0,0],time='1000')
