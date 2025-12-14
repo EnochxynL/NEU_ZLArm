@@ -82,7 +82,8 @@ def test_ik():
     robot = Robot(sim, uart)
 
     time.sleep(2)
-    ret,_joint_angles,best_alpha=inverse_kinematic(0, 360, 100, 0, 0)
+    ret,_joint_angles,best_alpha=inverse_kinematic(120, 120, 100, 90, -90)
+    print(_joint_angles)
     if ret:
         robot.send_command(_joint_angles[0],time='1000')
     else:

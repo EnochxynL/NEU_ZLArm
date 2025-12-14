@@ -193,9 +193,12 @@ def inverse_kinematic(x,y,z,roll,pitch,p_direction='bio',p_step=1):
     p_step --搜索步长
     
     返回:
-    两组逆解,注意，用第一组解就够了
+    两组逆解,注意，用第一组解就够了，也就是
+    ret,_joint_angles,best_alpha=inverse_kinematic(0, 360, 100, 0, 0)
+    robot.send_command(_joint_angles[0],time='1000')
 
     坐标: 朝前为X, 朝左为Y, 朝上为Z, 右手定则
+    角度: 执行器相对于机械臂末端, 如(0,0)代表直直地伸出去, 正为仰头, 负为俯头, 正为逆时针看, 负为顺时针看
     """
     alpha1=999
     alpha2=-999
