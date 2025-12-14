@@ -1,14 +1,14 @@
 from simulator import Simulator
-from zlink import ZLink
+from zlink import Hardware
 
 class Robot:
-    def __init__(self, sim: Simulator, uart: ZLink):
+    def __init__(self, sim: Simulator, hard: Hardware):
         self.sim = sim
-        self.uart = uart
+        self.hard = hard
         # 启动仿真
         self.sim.start_sim()
         # 运行串口通信
-        self.uart.open_port()
+        self.hard.start_hard()
 
     def send_command(self,joint_angles: list,time: str):
         '''
@@ -31,11 +31,11 @@ class Robot:
 
         '''
         self.sim.step_sim(joint_angles)
-        self.uart.send_command(joint_angles, time)
+        self.hard.send_command(joint_angles, time)
 
     def set_grapper_pwm(self, pwm: int, time: str = '0500'):
         '''
         设置夹爪舵机PWM值
         '''
         self.sim.set_grapper(pwm)
-        self.uart.set_grapper_pwm(pwm, time)
+        self.hard.set_grapper_pwm(pwm, time)

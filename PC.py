@@ -1,4 +1,4 @@
-from zlink import ZLink
+from zlink import ZLink, Hardware
 from simulator import Simulator
 from robot import Robot
 
@@ -8,9 +8,10 @@ import time
 
 
 def test_reset():
-    uart=ZLink('COM11',115200)
+    z=ZLink('COM11',115200)
+    hard = Hardware(z)
     sim = Simulator()
-    robot = Robot(sim, uart)
+    robot = Robot(sim, hard)
 
     time.sleep(2)
     robot.send_command([0, 90, 0, 0, 0],time='2000')
@@ -20,9 +21,10 @@ def test_reset():
 
 
 def test_move():
-    uart=ZLink('COM11',115200)
+    z=ZLink('COM11',115200)
+    hard = Hardware(z)
     sim = Simulator()
-    robot = Robot(sim, uart)
+    robot = Robot(sim, hard)
 
     time.sleep(4)
     robot.send_command([0, 96,-36, -96, 0],time='1000')
@@ -34,10 +36,10 @@ def test_move():
 
 
 def test_overlap():
-    uart=ZLink('COM11',115200)
+    z=ZLink('COM11',115200)
+    hard = Hardware(z)
     sim = Simulator()
-    robot = Robot(sim, uart)
-
+    robot = Robot(sim, hard)
     
     time.sleep(4)
     robot.send_command([0, 96,-36, -96, 0],time='1000')
@@ -77,9 +79,10 @@ def test_overlap():
 from kinematic import inverse_kinematic
 
 def test_ik():
-    uart=ZLink('COM11',115200)
+    z=ZLink('COM11',115200)
+    hard = Hardware(z)
     sim = Simulator()
-    robot = Robot(sim, uart)
+    robot = Robot(sim, hard)
 
     time.sleep(2)
     ret,_joint_angles,best_alpha=inverse_kinematic(120, 120, 100, 90, -90)

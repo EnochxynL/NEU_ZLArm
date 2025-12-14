@@ -1,4 +1,3 @@
-import serial
 import serial.tools.list_ports
 import time
 from simulator import Simulator
@@ -15,37 +14,43 @@ def convert_to_four_digit_string(number):
     result = "{:04d}".format(number)
     return result
 
-class ZLink:
-    DEBUG: bool = True
+class Z:
+    def is_open(self): pass
+    def close_port(self): pass
+    def send_data(self,data): pass
+    def read_data(self): pass
+    def read_data_until(self,data): pass
+    def read_data_until_timeout(self,data,timeout): pass
 
-    def __init__(self,port = None,baudrate = None,timeout = 0.1):
-        # 串口部分
-        self.port = port
-        self.baudrate = baudrate
-        self.timeout = timeout
+# from machine import UART
+
+# class ZUart:
+#     def __init__(self, pin=2, baud=115200):
+#         self.uart2 = UART(pin, baud)  
+#     def open_port(self):
+#         self.uart2.init(baud, bits=8, parity=None, stop=1)
+
+import serial
+
+class ZLink(Z):
+    def __init__(self, port='COM11', baud=115200, timeout = 0.1):
         self.ser = serial.Serial()
-        self.baudrate_options=["9600","19200","115200"]
-        self.pwm=[0,0,0,0,0]
-        self.old_pwm=[0,0,0,0,0]
-        self.count=int(0)
-        
+        self.ser.port=port
+        self.ser.baudrate=baud
+        self.ser.timeout=timeout
+
     def open_port(self):
-        self.ser.port=self.port
-        self.ser.baudrate=self.baudrate
-        self.ser.timeout=self.timeout
-        
         try:
             self.ser.open()
         except Exception as e:
             print(f"Error opening the serial port: {e}")
         if self.ser.isOpen():
             print("串口已成功打开")
-            self.servo_reset()
             return True
         else:
             print("串口未成功打开")
             return False
-        
+
     def is_open(self):
         return self.ser.isOpen()
     def close_port(self):
@@ -58,6 +63,20 @@ class ZLink:
         return self.ser.read_until(data)
     def read_data_until_timeout(self,data,timeout):
         return self.ser.read_until(data,timeout)
+        
+class Hardware:
+    DEBUG: bool = True
+
+    def __init__(self, z: Z):
+        # 串口部分
+        self.pwm=[0,0,0,0,0]
+        self.old_pwm=[0,0,0,0,0]
+        self.count=int(0)
+        self.z=z
+        self.servo_reset()
+
+    def start_hard(self):
+        return self.z.open_port()
         
     def send_command(self,joint_angles: list,time: str):
         '''
@@ -92,9 +111,9 @@ class ZLink:
         if self.DEBUG:
             print(command_string)
         # 串口发送控制
-        if self.is_open():
+        if self.z.is_open():
             self.count+=1
-            self.send_data(command_string.encode('utf-8'))
+            self.z.send_data(command_string.encode('utf-8'))
     
     def set_grapper_pwm(self,pwm,_time='0500'):
         time.sleep(0.01)
@@ -103,8 +122,8 @@ class ZLink:
         if self.DEBUG:
             print(command_string)
         # 串口发送控制
-        if self.is_open():
-            self.send_data(command_string.encode('utf-8'))
+        if self.z.is_open():
+            self.z.send_data(command_string.encode('utf-8'))
     
     def servo_reset(self):
         self.send_command([0,90,0,0,0],time='1000')
@@ -120,7 +139,7 @@ class ZLink:
         return port_list 
     
 def test_send():
-    uart=ZLink('COM3',115200)
+    uart=Hardware('COM3',115200)
     uart.open_port()
 
     import time
