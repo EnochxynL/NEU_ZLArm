@@ -1,3 +1,4 @@
+import math
 import numpy as np
 from calculate import *
 # import fprint
@@ -18,35 +19,35 @@ def jacobian(joint_angles):
     J=np.zeros((6,5))
     
     J[0,0]=0
-    J[0,1]=a2*np.sin(theta[2]+theta[3])+a3*np.sin(theta[3])
-    J[0,2]=a3*np.sin(theta[3])
+    J[0,1]=a2*math.sin(theta[2]+theta[3])+a3*math.sin(theta[3])
+    J[0,2]=a3*math.sin(theta[3])
     J[0,3]=0
     J[0,4]=0
-    J[1,0]=-np.sin(alpha4)*(a1+a2*np.cos(theta[1])+a3*np.cos(theta[1]+theta[2])+a4*np.cos(theta[1]+theta[2]+theta[3]))
-    J[1,1]=np.cos(alpha4)*(a2*np.cos(theta[2]+theta[3])+a3*np.cos(theta[3])+a4)
-    J[1,2]=np.cos(alpha4)*(a3*np.cos(theta[3])+a4)
-    J[1,3]=np.cos(alpha4)*(a4)
+    J[1,0]=-math.sin(alpha4)*(a1+a2*math.cos(theta[1])+a3*math.cos(theta[1]+theta[2])+a4*math.cos(theta[1]+theta[2]+theta[3]))
+    J[1,1]=math.cos(alpha4)*(a2*math.cos(theta[2]+theta[3])+a3*math.cos(theta[3])+a4)
+    J[1,2]=math.cos(alpha4)*(a3*math.cos(theta[3])+a4)
+    J[1,3]=math.cos(alpha4)*(a4)
     J[1,4]=0
-    J[2,0]=-np.cos(alpha4)*(a1+a2*np.cos(theta[1])+a3*np.cos(theta[1]+theta[2])+a4*np.cos(theta[1]+theta[2]+theta[3]))
-    J[2,1]=-np.sin(alpha4)*(a2*np.cos(theta[2]+theta[3])+a3*np.cos(theta[3])+a4)
-    J[2,2]=-np.sin(alpha4)*(a3*np.cos(theta[3])+a4)
-    J[2,3]=-np.sin(alpha4)*(a4)
+    J[2,0]=-math.cos(alpha4)*(a1+a2*math.cos(theta[1])+a3*math.cos(theta[1]+theta[2])+a4*math.cos(theta[1]+theta[2]+theta[3]))
+    J[2,1]=-math.sin(alpha4)*(a2*math.cos(theta[2]+theta[3])+a3*math.cos(theta[3])+a4)
+    J[2,2]=-math.sin(alpha4)*(a3*math.cos(theta[3])+a4)
+    J[2,3]=-math.sin(alpha4)*(a4)
     J[2,4]=0
     
-    J[3,0]=np.sin(theta[1]+theta[2]+theta[3])
+    J[3,0]=math.sin(theta[1]+theta[2]+theta[3])
     J[3,1]=0
     J[3,2]=0
     J[3,3]=0
     J[3,4]=1
-    J[4,0]=np.cos(alpha4)*np.cos(theta[1]+theta[2]+theta[3])
-    J[4,1]=np.sin(alpha4)
-    J[4,2]=np.sin(alpha4)
-    J[4,3]=np.sin(alpha4)
+    J[4,0]=math.cos(alpha4)*math.cos(theta[1]+theta[2]+theta[3])
+    J[4,1]=math.sin(alpha4)
+    J[4,2]=math.sin(alpha4)
+    J[4,3]=math.sin(alpha4)
     J[4,4]=0
-    J[5,0]=-np.sin(alpha4)*np.cos(theta[1]+theta[2]+theta[3])
-    J[5,1]=np.cos(alpha4)
-    J[5,2]=np.cos(alpha4)
-    J[5,3]=np.cos(alpha4)
+    J[5,0]=-math.sin(alpha4)*math.cos(theta[1]+theta[2]+theta[3])
+    J[5,1]=math.cos(alpha4)
+    J[5,2]=math.cos(alpha4)
+    J[5,3]=math.cos(alpha4)
     J[5,4]=0
     return J
 
@@ -73,20 +74,20 @@ def forward_kinematic(joint_angles):
     TF = np.zeros((4, 4))  # 正运动学矩阵
     TF[3, 3] = 1
 
-    TF[0, 0] = np.cos(theta[0]) * np.cos(theta[1] + theta[2] + theta[3])
-    TF[0, 1] = np.sin(theta[0]) * np.sin(alpha4) - np.cos(theta[0]) * np.sin(theta[1] + theta[2] + theta[3]) * np.cos(alpha4)
-    TF[0, 2] = np.sin(theta[0]) * np.cos(alpha4) + np.cos(theta[0]) * np.sin(theta[1] + theta[2] + theta[3]) * np.sin(alpha4)
-    TF[0, 3] = np.cos(theta[0]) * np.cos(theta[1] + theta[2] + theta[3]) * a4 + np.cos(theta[0]) * np.cos(theta[1] + theta[2]) * a3 + np.cos(theta[0]) * np.cos(theta[1]) * a2+np.cos(theta[0])*a1
+    TF[0, 0] = math.cos(theta[0]) * math.cos(theta[1] + theta[2] + theta[3])
+    TF[0, 1] = math.sin(theta[0]) * math.sin(alpha4) - math.cos(theta[0]) * math.sin(theta[1] + theta[2] + theta[3]) * math.cos(alpha4)
+    TF[0, 2] = math.sin(theta[0]) * math.cos(alpha4) + math.cos(theta[0]) * math.sin(theta[1] + theta[2] + theta[3]) * math.sin(alpha4)
+    TF[0, 3] = math.cos(theta[0]) * math.cos(theta[1] + theta[2] + theta[3]) * a4 + math.cos(theta[0]) * math.cos(theta[1] + theta[2]) * a3 + math.cos(theta[0]) * math.cos(theta[1]) * a2+math.cos(theta[0])*a1
 
-    TF[1, 0] = np.sin(theta[0]) * np.cos(theta[1] + theta[2] + theta[3])
-    TF[1, 1] = -np.cos(theta[0]) * np.sin(alpha4) - np.sin(theta[0]) * np.sin(theta[1] + theta[2] + theta[3]) * np.cos(alpha4)
-    TF[1, 2] = -np.cos(theta[0]) * np.cos(alpha4) + np.sin(theta[0]) * np.sin(theta[1] + theta[2] + theta[3]) * np.sin(alpha4)
-    TF[1, 3] = np.sin(theta[0]) * np.cos(theta[1] + theta[2] + theta[3]) * a4 + np.sin(theta[0]) * np.cos(theta[1] + theta[2]) * a3 + np.sin(theta[0]) * np.cos(theta[1]) * a2+np.sin(theta[0])*a1
+    TF[1, 0] = math.sin(theta[0]) * math.cos(theta[1] + theta[2] + theta[3])
+    TF[1, 1] = -math.cos(theta[0]) * math.sin(alpha4) - math.sin(theta[0]) * math.sin(theta[1] + theta[2] + theta[3]) * math.cos(alpha4)
+    TF[1, 2] = -math.cos(theta[0]) * math.cos(alpha4) + math.sin(theta[0]) * math.sin(theta[1] + theta[2] + theta[3]) * math.sin(alpha4)
+    TF[1, 3] = math.sin(theta[0]) * math.cos(theta[1] + theta[2] + theta[3]) * a4 + math.sin(theta[0]) * math.cos(theta[1] + theta[2]) * a3 + math.sin(theta[0]) * math.cos(theta[1]) * a2+math.sin(theta[0])*a1
 
-    TF[2, 0] = np.sin(theta[1] + theta[2] + theta[3])
-    TF[2, 1] = np.cos(theta[1] + theta[2] + theta[3]) * np.cos(alpha4)
-    TF[2, 2] = -np.cos(theta[1] + theta[2] + theta[3]) * np.sin(alpha4)
-    TF[2, 3] = np.sin(theta[1] + theta[2] + theta[3]) * a4 + np.sin(theta[1] + theta[2]) * a3 + np.sin(theta[1]) * a2 + d1
+    TF[2, 0] = math.sin(theta[1] + theta[2] + theta[3])
+    TF[2, 1] = math.cos(theta[1] + theta[2] + theta[3]) * math.cos(alpha4)
+    TF[2, 2] = -math.cos(theta[1] + theta[2] + theta[3]) * math.sin(alpha4)
+    TF[2, 3] = math.sin(theta[1] + theta[2] + theta[3]) * a4 + math.sin(theta[1] + theta[2]) * a3 + math.sin(theta[1]) * a2 + d1
     return TF
 def inverse_kinematic_analysis(x,y,z,Alpha):
     #参数设置
@@ -101,7 +102,7 @@ def inverse_kinematic_analysis(x,y,z,Alpha):
     # if np.abs(y) <= 1e-10:
     #     theta6 = 0.0
     # else:
-    theta6 = np.arctan2(y, x) * 180.0 / np.pi
+    theta6 = math.atan2(y, x) * 180.0 / math.pi
     #print('原始theta6:',theta6)
     
     #修正theta6
@@ -114,25 +115,25 @@ def inverse_kinematic_analysis(x,y,z,Alpha):
             theta6=180+theta6
     #print('修正theta6:',theta6)
     #修正xy
-    x=x+offset*np.cos(theta6*np.pi/180.0)
-    y=y+offset*np.sin(theta6*np.pi/180.0)
+    x=x+offset*math.cos(theta6*math.pi/180.0)
+    y=y+offset*math.sin(theta6*math.pi/180.0)
     
-    y = np.sqrt(x * x + y * y)
-    y = y - l3 * np.cos(Alpha * np.pi / 180.0)
-    z = z - l0 - l3 * np.sin(Alpha * np.pi / 180.0)
+    y = math.sqrt(x * x + y * y)
+    y = y - l3 * math.cos(Alpha * math.pi / 180.0)
+    z = z - l0 - l3 * math.sin(Alpha * math.pi / 180.0)
 
     if z < -l0:
         result = 1
         #print(result)
         return result, q1, q2, q3, q4
 
-    if np.sqrt(y * y + z * z) > (l1 + l2):
+    if math.sqrt(y * y + z * z) > (l1 + l2):
         result = 2
         #print(result)
         return result, q1, q2, q3, q4
 
-    ccc = np.arccos(y / np.sqrt(y * y + z * z))
-    bbb = (y * y + z * z + l1 * l1 - l2 * l2) / (2 * l1 * np.sqrt(y * y + z * z))
+    ccc = math.acos(y / math.sqrt(y * y + z * z))
+    bbb = (y * y + z * z + l1 * l1 - l2 * l2) / (2 * l1 * math.sqrt(y * y + z * z))
 
     if bbb > 1 or bbb < -1:
         result = 3
@@ -144,8 +145,8 @@ def inverse_kinematic_analysis(x,y,z,Alpha):
     else:
         zf_flag = 1
 
-    theta5 = ccc * zf_flag + np.arccos(bbb)
-    theta5 = theta5 * 180.0 / np.pi
+    theta5 = ccc * zf_flag + math.acos(bbb)
+    theta5 = theta5 * 180.0 / math.pi
 
     if theta5 > 180.0 or theta5 < 0.0:
         result = 4
@@ -159,8 +160,8 @@ def inverse_kinematic_analysis(x,y,z,Alpha):
         #print(result)
         return result, q1, q2, q3, q4
 
-    theta4 = np.arccos(aaa)
-    theta4 = 180.0 - theta4 * 180.0 / np.pi
+    theta4 = math.acos(aaa)
+    theta4 = 180.0 - theta4 * 180.0 / math.pi
 
     if theta4 > 135.0 or theta4 < -135.0:
         result = 6
@@ -268,7 +269,7 @@ def inverse_kinematic(x,y,z,roll,pitch,p_direction='bio',p_step=1):
     ret,q1,q2,q3,q4=inverse_kinematic_analysis(x,y,z,Alpha)        
             
     #下面是验证q1和q2,3,4是不是在同一组解里面
-    T =forward_kinematic([q1* np.pi / 180.0, q2* np.pi / 180.0, q3* np.pi / 180.0, q4* np.pi / 180.0, q5* np.pi / 180.0])
+    T =forward_kinematic([q1* math.pi / 180.0, q2* math.pi / 180.0, q3* math.pi / 180.0, q4* math.pi / 180.0, q5* math.pi / 180.0])
     #利用x,y,z约束判断
     # #print(T)
     if  (abs(T[0,3]-x)+ abs(T[1,3]-y)+ abs(T[2,3]-z)) < 1e-10:
@@ -306,7 +307,7 @@ if __name__ == '__main__':
     TF=forward_kinematic(np.deg2rad(ret[1][0]))
     #print('逆解正解',TF)
 
-    theta=[15*np.pi/180,80*np.pi/180,60*np.pi/180,50*np.pi/180,0]
+    theta=[15*math.pi/180,80*math.pi/180,60*math.pi/180,50*math.pi/180,0]
     print(jacobian(theta))
 
 
