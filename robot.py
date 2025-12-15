@@ -1,5 +1,6 @@
 from simulator import Simulator
 from hardware import Hardware
+from kinematic import inverse_kinematic
 
 class Robot:
     def __init__(self, sim: Simulator, hard: Hardware):
@@ -39,3 +40,13 @@ class Robot:
         '''
         self.sim.set_grapper(pwm)
         self.hard.set_grapper_pwm(pwm, time)
+
+    def goto(self,x,y,z,roll,pitch,p_direction='bio',p_step=1):
+        ret,_joint_angles,best_alpha=inverse_kinematic(x,y,z,roll,pitch,p_direction,p_step)
+        if not ret:
+            print('无法到达指定位置')
+            return False
+        else:
+            print('逆解关节角：',_joint_angles[0])
+            self.send_command(_joint_angles[0],time='1000')
+            return True

@@ -14,10 +14,26 @@ def test_reset():
     sim = Simulator()
     robot = Robot(sim, hard)
 
-    time.sleep(2)
+    time.sleep(3)
     robot.send_command([0, 90, 0, 0, 0],time='2000')
-    time.sleep(2)
+    time.sleep(3)
     robot.send_command([30, 30, 30, 30, 30],time='2000')
+    time.sleep(3)
+    robot.send_command([-38.65980825409009, 124.17268651474643, -133.91521244290925, -7.25747407183718, 0],time='2000')
+    time.sleep(3)
+    robot.send_command([-38.65980825409009, 124.17268651474643, -30.91521244290925, -7.25747407183718, 0],time='2000')
+    time.sleep(3)
+    robot.send_command([-38.65980825409009, 124.17268651474643, -100.91521244290925, -7.25747407183718, 0],time='2000')
+    time.sleep(3)
+    robot.send_command([-38.65980825409009, 124.17268651474643, -110.91521244290925, -7.25747407183718, 0],time='2000')
+    time.sleep(3)
+    robot.send_command([-38.65980825409009, 124.17268651474643, -120.91521244290925, -7.25747407183718, 0],time='2000')
+    time.sleep(3)
+    robot.send_command([-38.65980825409009, 124.17268651474643, -130.91521244290925, -7.25747407183718, 0],time='2000')
+    time.sleep(3)
+    robot.send_command([-38.65980825409009, 124.17268651474643, -130.91521244290925, -7.25747407183718, 0],time='2000')
+    time.sleep(3)
+    robot.send_command([-38.65980825409009, 124.17268651474643, 120.91521244290925, -7.25747407183718, 0],time='2000')
 
 
 
@@ -93,8 +109,19 @@ def test_ik():
     else:
         print('not ret')
 
+def test_goto():
+    z=ZLink('COM11',115200)
+    hard = Hardware(z)
+    sim = Simulator()
+    robot = Robot(sim, hard)
+
+    time.sleep(4)
+    robot.goto(150, -120, 100, 0, -90)
+    time.sleep(4)
+    robot.goto(150, 120, 100, 0, -90)
+
 if __name__ == '__main__':
-    test_reset()
+    test_goto()
     
     while True:
         pass
