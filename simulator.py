@@ -53,18 +53,28 @@ class Simulator:
 
             if _joint_angles is not None:
                 if len(_joint_angles)>=4:
+                    pwm = [0,0,0,0,0]
+                    pwm[0]=(int)(1500+1400*_joint_angles[0]/180)
+                    pwm[1]=(int)( 800+1400*_joint_angles[1]/180)
+                    pwm[2]=(int)(1500-1400*_joint_angles[2]/180)
+                    # self.pwm[3]=(int)(1500-1000*joint_angles[3]/135)
+                    pwm[3]=(int)(1500+1000*_joint_angles[3]/135) # [x]
+                    pwm[4]=(int)(1500+1400*_joint_angles[4]/180)
                     #转换
                     #注意时弧度制
                     _joint_angles=np.deg2rad(_joint_angles)
                     print('仿真角度（弧度制）：',_joint_angles)
-                    joint_angles=[0,0,0,0,0]
-                    joint_angles[0]=-_joint_angles[0]
-                    joint_angles[1]=-_joint_angles[1]
-                    joint_angles[2]=_joint_angles[2]
-                    joint_angles[3]=-_joint_angles[3]
-                    joint_angles[4]=-_joint_angles[4]
+                    joint_ratio=[-1, -1, 1, -1, -1] #关节反向比例
+                    joint_angles=[]
+                    joint_indices=[]
+                    for i in range(5):
+                        if pwm[i] <= 2500 and pwm[i] >= 500: #120度
+                            joint_indices.append(i)
+                            joint_angles.append(_joint_angles[i] * joint_ratio[i])
                     #仿真
-                    p.setJointMotorControlArray(self.jibot,jointIndices=range(0,5),controlMode=p.POSITION_CONTROL,targetPositions=joint_angles)
+                    print('仿真关节索引：',joint_indices)
+                    print('仿真目标关节角：',joint_angles)
+                    p.setJointMotorControlArray(self.jibot,jointIndices=joint_indices,controlMode=p.POSITION_CONTROL,targetPositions=joint_angles)
                 else:
                     print("警告：关节角度列表长度不为5，不更新关节角")
             else:
