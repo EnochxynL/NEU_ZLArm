@@ -1,23 +1,6 @@
-class Z:
-    def is_open(self): pass
-    def close_port(self): pass
-    def send_data(self,data): pass
-    def read_data(self): pass
-    def read_data_until(self,data): pass
-    def read_data_until_timeout(self,data,timeout): pass
-
-# from machine import UART
-
-# class ZUart:
-#     def __init__(self, pin=2, baud=115200):
-#         self.baud = baud
-#         self.uart2 = UART(pin, baud)  
-#     def open_port(self):
-#         self.uart2.init(self.baud, bits=8, parity=None, stop=1)
-
 import serial
 
-class ZLink(Z):
+class ZLink:
     def __init__(self, port='COM11', baud=115200, timeout = 0.1):
         self.ser = serial.Serial()
         self.ser.port=port

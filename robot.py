@@ -1,15 +1,14 @@
-from simulator import Simulator
 from hardware import Hardware
 from kinematic import inverse_kinematic
 
 class Robot:
-    def __init__(self, sim: Simulator, hard: Hardware):
+    def __init__(self, sim, hard: Hardware):
         self.sim = sim
         self.hard = hard
         # 启动仿真
-        self.sim.start_sim()
+        if self.sim is not None: self.sim.start_sim()
         # 运行串口通信
-        self.hard.start_hard()
+        if self.hard is not None: self.hard.start_hard()
 
     def send_command(self,joint_angles: list,time: str):
         '''
@@ -31,15 +30,15 @@ class Robot:
         []
 
         '''
-        self.sim.step_sim(joint_angles)
-        self.hard.send_command(joint_angles, time)
+        if self.sim is not None: self.sim.step_sim(joint_angles)
+        if self.hard is not None: self.hard.send_command(joint_angles, time)
 
     def set_grapper_pwm(self, pwm: int, time: str = '0500'):
         '''
         设置夹爪舵机PWM值
         '''
-        self.sim.set_grapper(pwm)
-        self.hard.set_grapper_pwm(pwm, time)
+        if self.sim is not None: self.sim.set_grapper(pwm)
+        if self.hard is not None: self.hard.set_grapper_pwm(pwm, time)
 
     def goto(self,x,y,z,roll,pitch,p_direction='bio',p_step=1):
         ret,_joint_angles,best_alpha=inverse_kinematic(x,y,z,roll,pitch,p_direction,p_step)

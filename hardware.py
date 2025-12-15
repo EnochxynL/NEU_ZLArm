@@ -1,5 +1,4 @@
 import time
-from zlink import Z
 
 DEFAULT_CMD = '#000P1500T1000!#001P2150T1000!#002P2300T1000!#003P1000T1000!#004P1500T1000!#005P1500T1000!'
 
@@ -16,7 +15,8 @@ def convert_to_four_digit_string(number):
 class Hardware:
     DEBUG: bool = True
 
-    def __init__(self, z: Z):
+    def __init__(self, z):
+        '''z可以是ZLink类也可以是ZUart类'''
         # 串口部分
         self.pwm=[0,0,0,0,0]
         self.old_pwm=[0,0,0,0,0]
