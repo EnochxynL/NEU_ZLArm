@@ -155,15 +155,15 @@ class JIBot:
         
         #*********************交互控制页***********************#     
         # 加载图片
-        pixmap = QPixmap('ui/stick_cartesian.png')
-        self.ui.label_stick_cartesian.setPixmap(pixmap)
-        pixmap = QPixmap('ui/stick_joint.png')
-        self.ui.label_stick_joint.setPixmap(pixmap)
-        self.ui.label_stick_joint.show()  
-        self.ui.label_stick_cartesian.show()
-        self.ui.label_stick_joint.setVisible(False)           
-        self.ui.pushButton_stickUpdate.clicked.connect(self.stickUpdate)
-        self.ui.pushButton_stickOpen.clicked.connect(self.stickOpen)
+        # pixmap = QPixmap('ui/stick_cartesian.png')
+        # self.ui.label_stick_cartesian.setPixmap(pixmap)
+        # pixmap = QPixmap('ui/stick_joint.png')
+        # self.ui.label_stick_joint.setPixmap(pixmap)
+        # self.ui.label_stick_joint.show()  
+        # self.ui.label_stick_cartesian.show()
+        # self.ui.label_stick_joint.setVisible(False)           
+        # self.ui.pushButton_stickUpdate.clicked.connect(self.stickUpdate)
+        # self.ui.pushButton_stickOpen.clicked.connect(self.stickOpen)
         self.interact.signal_shift_to_joint.connect(self.shift_to_joint)
         self.interact.signal_shift_to_cartesian.connect(self.shift_to_cartesian)
         self.interact.signal_xNeg.connect(self.xNeg)
@@ -205,8 +205,8 @@ class JIBot:
             Qt.Key_D: 'j1Neg',
             Qt.Key_C: 'zNeg',
             Qt.Key_Z: 'zPos',
-            Qt.Key_Up: 'pitchPos',
-            Qt.Key_Down: 'pitchNeg',
+            Qt.Key_Up: 'j4Pos',
+            Qt.Key_Down: 'j4Neg',
             Qt.Key_Left: 'rollNeg',
             Qt.Key_Right: 'rollPos',
             Qt.Key_F: 'grapperPos',
