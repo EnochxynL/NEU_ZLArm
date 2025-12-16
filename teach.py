@@ -220,9 +220,9 @@ class Teach:
             T=forward_kinematic(np.deg2rad(self.joint_cur_paras))
             # print('joints:\n',self.joint_cur_paras)
             # print('T:\n',T)
-            self.cartesian_cur_paras[0]=T[0,3]
-            self.cartesian_cur_paras[1]=T[1,3]
-            self.cartesian_cur_paras[2]=T[2,3]
+            self.cartesian_cur_paras[0]=T[0][3]
+            self.cartesian_cur_paras[1]=T[1][3]
+            self.cartesian_cur_paras[2]=T[2][3]
             self.cartesian_cur_paras[3]=joints_traj[-1][4]
             self.cartesian_cur_paras[4]=joints_traj[-1][1]+joints_traj[-1][2]+joints_traj[-1][3]
             return True
@@ -285,9 +285,9 @@ class Teach:
                 self.joint_old_paras=self.joint_cur_paras
                 self.joint_cur_paras=pieces[j]['via'][-1]
                 T=forward_kinematic(np.deg2rad(self.joint_cur_paras))
-                self.cartesian_cur_paras[0]=T[0,3]
-                self.cartesian_cur_paras[1]=T[1,3]
-                self.cartesian_cur_paras[2]=T[2,3]
+                self.cartesian_cur_paras[0]=T[0][3]
+                self.cartesian_cur_paras[1]=T[1][3]
+                self.cartesian_cur_paras[2]=T[2][3]
                 self.cartesian_cur_paras[3]=joints_traj[-1][4]
                 self.cartesian_cur_paras[4]=joints_traj[-1][1]+joints_traj[-1][2]+joints_traj[-1][3]
             else:#就返回最后一个可以到达的那个示教点
