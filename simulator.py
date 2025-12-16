@@ -59,7 +59,8 @@ class Simulator:
                     pwm[2]=(int)(1500-1400*_joint_angles[2]/180)
                     # self.pwm[3]=(int)(1500-1000*joint_angles[3]/135)
                     pwm[3]=(int)(1500+1000*_joint_angles[3]/135) # [x]
-                    pwm[4]=(int)(1500+1400*_joint_angles[4]/180)
+                    # self.pwm[4]=(int)(1500+1400*joint_angles[4]/180)
+                    pwm[4]=(int)(1500-1400*_joint_angles[4]/180) # [x]
                     #转换
                     #注意时弧度制
                     _joint_angles=np.deg2rad(_joint_angles)

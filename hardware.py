@@ -46,7 +46,8 @@ class Hardware:
         self.pwm[2]=(int)(1500-1400*joint_angles[2]/180)
         # self.pwm[3]=(int)(1500-1000*joint_angles[3]/135)
         self.pwm[3]=(int)(1500+1000*joint_angles[3]/135) # [x]
-        self.pwm[4]=(int)(1500+1400*joint_angles[4]/180)
+        # self.pwm[4]=(int)(1500+1400*joint_angles[4]/180)
+        self.pwm[4]=(int)(1500-1400*joint_angles[4]/180) # [x]
         command=[]
         for i in range(5):
             if abs(self.pwm[i]-self.old_pwm[i])>=2:#pwm差值太小就别法信息了，防止引起抖动

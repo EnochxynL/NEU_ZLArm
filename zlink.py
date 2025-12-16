@@ -24,7 +24,10 @@ class ZLink:
     def close_port(self):
         self.ser.close()
     def send_data(self,data):
-        self.ser.write(data)
+        try :
+            self.ser.write(data)
+        except Exception as e:
+            print(f"Error sending data to serial port: {e}")
     def read_data(self):
         return self.ser.readline()
     def read_data_until(self,data):
