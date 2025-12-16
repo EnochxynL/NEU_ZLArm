@@ -23,7 +23,6 @@ class Hardware:
         self.old_pwm=[0,0,0,0,0]
         self.count=int(0)
         self.z=z
-        self.servo_reset()
 
     def start_hard(self):
         return self.z.open_port()

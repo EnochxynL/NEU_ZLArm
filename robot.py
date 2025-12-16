@@ -12,6 +12,7 @@ class Robot:
         if self.sim is not None: self.sim.start_sim()
         # 运行串口通信
         if self.hard is not None: self.hard.start_hard()
+        self.servo_reset()
 
     def send_command(self,joint_angles: list,time: str):
         '''
