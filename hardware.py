@@ -73,12 +73,6 @@ class Hardware:
         # 串口发送控制
         if self.z.is_open():
             self.z.send_data(command_string.encode('utf-8'))
-    
-    def servo_reset(self):
-        self.send_command([0,90,0,0,0],time='1000')
-        time.sleep(1)
-        self.set_grapper_pwm(1300)
-        time.sleep(0.01)
 
 import serial.tools.list_ports  
 def get_serial_port():

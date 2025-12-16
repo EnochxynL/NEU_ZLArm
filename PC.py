@@ -122,6 +122,49 @@ def test_goto():
     time.sleep(4)
     robot.goto(150, 120, 100, 0, -90)
 
+
+def cartesian_planning_test():
+    # 串口设置
+    ser=UART()
+    ser.port='COM3'
+    ser.baudrate=115200
+    ser.open_port()
+    # servo_reset(ser)  
+    cartesian=np.array([[0,0,350,0,0],[0,0,0,0,0]])
+    while True:
+    
+
+        # 发送数据到串口
+        user_input = input("Enter target (x, y, z, roll, pitch): ")
+        
+        if user_input:
+            # 提取坐标
+            
+            cartesian[1] = extract_cartesian(user_input)
+            # print(cartesian)
+            cartesian_traj=cartesian_planning(cartesian)
+            # print(cartesian_traj)
+            joint_angles=[]
+            all_can_inverse=True
+            for i in range(len(cartesian_traj)):
+                ret,_joint_angles,best_alpha=inverse_kinematic(cartesian_traj[i,0],cartesian_traj[i,1],cartesian_traj[i,2],cartesian_traj[i,3],cartesian_traj[i,4])
+                if ret:
+                    joint_angles.append(_joint_angles)
+                    # send_command(ser,np.array(joint_angles[0]))                
+                else:
+                    print("逆解求解失败，取消执行！")
+                    all_can_inverse=False
+                    break;
+            if all_can_inverse:
+                print(joint_angles[-1])
+                for i in range(len(joint_angles)):
+                    ser.send_command(np.array(joint_angles[i][0]),time='0100')
+                
+            cartesian[0]=cartesian[1]
+        
+        else:
+            break
+
 if __name__ == '__main__':
     test_reset()
     

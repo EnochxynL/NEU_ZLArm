@@ -1,6 +1,8 @@
 from hardware import Hardware
 from kinematic import inverse_kinematic
 
+import time
+
 class Robot:
     def __init__(self, sim, hard: Hardware):
         self.sim = sim
@@ -39,6 +41,12 @@ class Robot:
         '''
         if self.sim is not None: self.sim.set_grapper(pwm)
         if self.hard is not None: self.hard.set_grapper_pwm(pwm, time)
+        
+    def servo_reset(self):
+        self.send_command([0,90,0,0,0],time='1000')
+        time.sleep(1)
+        self.set_grapper_pwm(1300)
+        time.sleep(0.01)
 
     def goto(self,x,y,z,roll,pitch,p_direction='bio',p_step=1):
         ret,_joint_angles,best_alpha=inverse_kinematic(x,y,z,roll,pitch,p_direction,p_step)

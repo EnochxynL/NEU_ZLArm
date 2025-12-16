@@ -1,0 +1,7 @@
+<RCC>
+  <qresource prefix="图片">
+    <file>stick_cartesian.png</file>
+    <file>9.jpg</file>
+    <file>stick_joint.png</file>
+  </qresource>
+</RCC>

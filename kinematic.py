@@ -287,7 +287,7 @@ def inverse_kinematic(x,y,z,roll,pitch,p_direction='bio',p_step=1):
     T =forward_kinematic([q1* math.pi / 180.0, q2* math.pi / 180.0, q3* math.pi / 180.0, q4* math.pi / 180.0, q5* math.pi / 180.0])
     #利用x,y,z约束判断
     # #print(T)
-    if  (abs(T[0,3]-x)+ abs(T[1,3]-y)+ abs(T[2,3]-z)) < 1e-10:
+    if  (abs(T[0][3]-x)+ abs(T[1][3]-y)+ abs(T[2][3]-z)) < 1e-10:
         #print('满足xyz约束')
         pass
     else:
@@ -314,7 +314,7 @@ if __name__ == '__main__':
 
     T=forward_kinematic(deg2rad([10,80,30,-30,0]))
     print('正运动学：\n',T)
-    ret=inverse_kinematic(T[0,3],T[1,3],T[2,3],0,90)
+    ret=inverse_kinematic(T[0][3],T[1][3],T[2][3],0,90)
     print('逆解：\n',ret)
 
     ret=inverse_kinematic(-10,0,453,0,90)
