@@ -191,8 +191,50 @@ class JIBot:
         self.interact.signal_grapperNeg_2.connect(self.grapperNeg_2)
         self.interact.signal_grapperPos_2.connect(self.grapperPos_2)
         
-        
-        
+        # ********************* 键盘遥控补丁 *********************** #
+        from PyQt5.QtCore import Qt
+
+        # 记录当前按下的键（防止重复触发）
+        self._key_pressed = set()
+
+        # 用 QShortcut 捕获按键（好处：不需要焦点也能响应）
+        self.key_map = {
+            Qt.Key_W: 'xPos',
+            Qt.Key_S: 'xNeg',
+            Qt.Key_A: 'j1Pos',
+            Qt.Key_D: 'j1Neg',
+            Qt.Key_C: 'zNeg',
+            Qt.Key_Z: 'zPos',
+            Qt.Key_Up: 'pitchPos',
+            Qt.Key_Down: 'pitchNeg',
+            Qt.Key_Left: 'rollNeg',
+            Qt.Key_Right: 'rollPos',
+            Qt.Key_F: 'grapperPos',
+            Qt.Key_J: 'grapperNeg',
+        }
+
+        for key, func in self.key_map.items():
+            sc = QtWidgets.QShortcut(QtGui.QKeySequence(key), self.ui)
+            sc.setContext(Qt.ApplicationShortcut)          # 全局有效
+            sc.activated.connect(lambda f=func: self._key_start(f))
+
+        # 给主窗口挂 keyReleaseEvent
+        self.ui.keyReleaseEvent = self._key_release       # 直接替换，简单粗暴
+
+    # ---------- 按下 ----------
+    def _key_start(self, func_name):
+        if func_name in self._key_pressed:
+            return
+        self._key_pressed.add(func_name)
+        getattr(self, func_name)()
+
+    # ---------- 松开 ----------
+    def _key_release(self, event):
+        func = self.key_map.get(event.key())
+        if func and func in self._key_pressed:
+            self._key_pressed.discard(func)
+        # 如果想让别的按键继续正常响应，就保留下面这句：
+        event.accept()   
         
     def update_all_lables(self):
         #笛卡尔tab页
