@@ -1,10 +1,11 @@
+from simulator import Simulator
 from hardware import Hardware
 from kinematic import inverse_kinematic
 
 import time
 
 class Robot:
-    def __init__(self, sim, hard: Hardware):
+    def __init__(self, sim: Simulator, hard: Hardware):
         self.sim = sim
         self.hard = hard
         # 启动仿真

@@ -1,5 +1,3 @@
-
-import cv2
 from PyQt5.QtCore import  QThread, pyqtSignal
 import numpy as np
 import pygame

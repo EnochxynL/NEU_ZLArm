@@ -11,6 +11,12 @@ from teach import Teach
 from interact import Interact
 import time
 
+from hardware import get_serial_port,baudrate_options
+
+from simulator import Simulator
+from hardware import Hardware
+from zlink import ZLink
+
 import pandas as pd
 # from calibration.handeye_clib.handeye_calibration import hangeye_calibration 
 class JIBot:
@@ -24,7 +30,9 @@ class JIBot:
         
         
         #*********************基础控制页***********************#
-        self.robot=Robot()
+        sim = Simulator()
+        hard = Hardware(ZLink())
+        self.robot=Robot(sim, hard)
         self.teach=Teach()
         # self.vision=Vision()
         self.interact=Interact()
@@ -36,7 +44,7 @@ class JIBot:
         #######串口通信及仿真
         self.ui.pushButton_portUpdate.clicked.connect(self.portUpdate)
         self.ui.comboBox_baud.clear()
-        self.ui.comboBox_baud.addItems(self.robot.baudrate_options)
+        self.ui.comboBox_baud.addItems(baudrate_options)
         self.ui.comboBox_baud.setCurrentIndex(2)
         self.ui.pushButton_establish.clicked.connect(self.portEstablish)
         self.ui.pushButton_send.clicked.connect(self.portSend)
@@ -98,51 +106,52 @@ class JIBot:
 
     
         #*********************视觉控制页***********************#
-        if self.vision.eye_to_end_existed==False:
-            self.ui.textEdit_clibInfo.moveCursor(QTextCursor.End)
-            self.ui.textEdit_clibInfo.insertPlainText('>>>注意：当前尚无手眼标定结果可用...' + '\n')
-            self.ui.textEdit_clibInfo.moveCursor(QTextCursor.End)
-        else:
-            self.ui.textEdit_clibInfo.moveCursor(QTextCursor.End)
-            self.ui.textEdit_clibInfo.insertPlainText('>>>已成功加载手眼标定结果...' + '\n')
-            self.ui.textEdit_clibInfo.moveCursor(QTextCursor.End)
-        self.vision.change_pixmap_signal.connect(self.update_liveVideo)
-        self.ui.pushButton_camUpdate.clicked.connect(self.cameraUpdate)
-        self.ui.pushButton_cameraOpen.clicked.connect(self.cameraOpen)
-        self.ui.pushButton_snap.clicked.connect(self.snap)
-        self.ui.pushButton_clibRun.clicked.connect(self.clibRun)
-        #抓取
-        self.ui.horizontalSlider_hl.valueChanged.connect(self.change_hl)
-        self.ui.horizontalSlider_sl.valueChanged.connect(self.change_sl)
-        self.ui.horizontalSlider_vl.valueChanged.connect(self.change_vl)
-        self.ui.horizontalSlider_hu.valueChanged.connect(self.change_hu)
-        self.ui.horizontalSlider_su.valueChanged.connect(self.change_su)
-        self.ui.horizontalSlider_vu.valueChanged.connect(self.change_vu)
-        self.ui.pushButton_savePickConfig.clicked.connect(self.savePickConfig)
-        self.ui.lineEdit_targetLen.setPlaceholderText(str(self.vision.target_size[0]))
-        self.ui.lineEdit_targetWid.setPlaceholderText(str(self.vision.target_size[1]))
-        self.ui.lineEdit_placeX.setPlaceholderText(str(self.vision.place_pose[0]))
-        self.ui.lineEdit_placeY.setPlaceholderText(str(self.vision.place_pose[1]))
-        self.ui.pushButton_change_waitJoint.clicked.connect(self.change_waitJoint)
-        self.ui.pushButton_pick.clicked.connect(self.pick)
-        self.vision.grasp_info_signal.connect(self.update_grasp_info)
-        self.ui.pushButton_roi.clicked.connect(self.roiView)
-        #跟踪
-        self.ui.horizontalSlider_hl_2.valueChanged.connect(self.change_hl_2)
-        self.ui.horizontalSlider_sl_2.valueChanged.connect(self.change_sl_2)
-        self.ui.horizontalSlider_vl_2.valueChanged.connect(self.change_vl_2)
-        self.ui.horizontalSlider_hu_2.valueChanged.connect(self.change_hu_2)
-        self.ui.horizontalSlider_su_2.valueChanged.connect(self.change_su_2)
-        self.ui.horizontalSlider_vu_2.valueChanged.connect(self.change_vu_2)
-        self.ui.pushButton_saveTrackConfig.clicked.connect(self.saveTrackConfig)
-        self.ui.lineEdit_targetLen_2.setPlaceholderText(str(self.vision.target_size_2[0]))
-        self.ui.lineEdit_targetWid_2.setPlaceholderText(str(self.vision.target_size_2[1]))
-        self.ui.lineEdit_dis.setPlaceholderText(str(self.vision.hold_dis))
-        self.ui.lineEdit_lamda.setPlaceholderText(str(self.vision.lamda))
-        self.ui.pushButton_change_waitJoint_2.clicked.connect(self.change_waitJoint_2)
-        self.ui.pushButton_track.clicked.connect(self.track)
-        self.vision.track_info_signal.connect(self.update_track_info)
-        self.ui.pushButton_roi_2.clicked.connect(self.roiView_2)
+        if False:
+            if self.vision.eye_to_end_existed==False:
+                self.ui.textEdit_clibInfo.moveCursor(QTextCursor.End)
+                self.ui.textEdit_clibInfo.insertPlainText('>>>注意：当前尚无手眼标定结果可用...' + '\n')
+                self.ui.textEdit_clibInfo.moveCursor(QTextCursor.End)
+            else:
+                self.ui.textEdit_clibInfo.moveCursor(QTextCursor.End)
+                self.ui.textEdit_clibInfo.insertPlainText('>>>已成功加载手眼标定结果...' + '\n')
+                self.ui.textEdit_clibInfo.moveCursor(QTextCursor.End)
+            self.vision.change_pixmap_signal.connect(self.update_liveVideo)
+            self.ui.pushButton_camUpdate.clicked.connect(self.cameraUpdate)
+            self.ui.pushButton_cameraOpen.clicked.connect(self.cameraOpen)
+            self.ui.pushButton_snap.clicked.connect(self.snap)
+            self.ui.pushButton_clibRun.clicked.connect(self.clibRun)
+            #抓取
+            self.ui.horizontalSlider_hl.valueChanged.connect(self.change_hl)
+            self.ui.horizontalSlider_sl.valueChanged.connect(self.change_sl)
+            self.ui.horizontalSlider_vl.valueChanged.connect(self.change_vl)
+            self.ui.horizontalSlider_hu.valueChanged.connect(self.change_hu)
+            self.ui.horizontalSlider_su.valueChanged.connect(self.change_su)
+            self.ui.horizontalSlider_vu.valueChanged.connect(self.change_vu)
+            self.ui.pushButton_savePickConfig.clicked.connect(self.savePickConfig)
+            self.ui.lineEdit_targetLen.setPlaceholderText(str(self.vision.target_size[0]))
+            self.ui.lineEdit_targetWid.setPlaceholderText(str(self.vision.target_size[1]))
+            self.ui.lineEdit_placeX.setPlaceholderText(str(self.vision.place_pose[0]))
+            self.ui.lineEdit_placeY.setPlaceholderText(str(self.vision.place_pose[1]))
+            self.ui.pushButton_change_waitJoint.clicked.connect(self.change_waitJoint)
+            self.ui.pushButton_pick.clicked.connect(self.pick)
+            self.vision.grasp_info_signal.connect(self.update_grasp_info)
+            self.ui.pushButton_roi.clicked.connect(self.roiView)
+            #跟踪
+            self.ui.horizontalSlider_hl_2.valueChanged.connect(self.change_hl_2)
+            self.ui.horizontalSlider_sl_2.valueChanged.connect(self.change_sl_2)
+            self.ui.horizontalSlider_vl_2.valueChanged.connect(self.change_vl_2)
+            self.ui.horizontalSlider_hu_2.valueChanged.connect(self.change_hu_2)
+            self.ui.horizontalSlider_su_2.valueChanged.connect(self.change_su_2)
+            self.ui.horizontalSlider_vu_2.valueChanged.connect(self.change_vu_2)
+            self.ui.pushButton_saveTrackConfig.clicked.connect(self.saveTrackConfig)
+            self.ui.lineEdit_targetLen_2.setPlaceholderText(str(self.vision.target_size_2[0]))
+            self.ui.lineEdit_targetWid_2.setPlaceholderText(str(self.vision.target_size_2[1]))
+            self.ui.lineEdit_dis.setPlaceholderText(str(self.vision.hold_dis))
+            self.ui.lineEdit_lamda.setPlaceholderText(str(self.vision.lamda))
+            self.ui.pushButton_change_waitJoint_2.clicked.connect(self.change_waitJoint_2)
+            self.ui.pushButton_track.clicked.connect(self.track)
+            self.vision.track_info_signal.connect(self.update_track_info)
+            self.ui.pushButton_roi_2.clicked.connect(self.roiView_2)
         
         #*********************交互控制页***********************#     
         # 加载图片
@@ -204,23 +213,23 @@ class JIBot:
         
             
     def portUpdate(self):
-        port_list=self.robot.get_serial_port()
+        port_list=get_serial_port()
         self.ui.comboBox_port.clear()
         self.ui.comboBox_port.addItems(port_list)
         print('更新完毕')
         
     def portEstablish(self):
-        if self.robot.ser.isOpen()==False:
-            self.robot.port=self.ui.comboBox_port.currentText()
-            self.robot.baudrate=int(self.ui.comboBox_baud.currentText())
-            ret=self.robot.open_port()
+        if self.robot.hard.z.ser.isOpen()==False:
+            self.robot.hard.z.ser.port=self.ui.comboBox_port.currentText()
+            self.robot.hard.z.ser.baudrate=int(self.ui.comboBox_baud.currentText())
+            ret=self.robot.hard.z.open_port()
             if ret == False:
                 QMessageBox.warning(self.ui,'Warning','串口打开失败！')
             else:
                 QMessageBox.information(self.ui,'Information','串口打开成功！')
                 self.ui.pushButton_establish.setText('断开')
         else:
-            self.robot.close_port()
+            self.robot.hard.z.close_port()
             QMessageBox.information(self.ui,'Information','串口已断开！')
             self.ui.pushButton_establish.setText('连接')
     def portSend(self):
@@ -230,7 +239,7 @@ class JIBot:
         self.ui.textEdit_send.insertPlainText('>>>'+cur_text + '\n')
         self.ui.textEdit_send.moveCursor(QTextCursor.End)
         #串口发送
-        self.robot.ser.write(cur_text.encode('utf-8'))
+        self.robot.hard.z.ser.write(cur_text.encode('utf-8'))
     
     def sim_start(self):
         if self.robot.sim.is_simulating ==False:
@@ -822,38 +831,38 @@ class JIBot:
         else:
             QMessageBox.information(self.ui,'提示','运动完成')
         
-    def update_liveVideo(self,frame):
-        rgb_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        h, w, ch = rgb_image.shape
-        bytes_per_line = ch * w
-        qt_image = QImage(rgb_image.data, w, h, bytes_per_line, QImage.Format_RGB888)
-        pixmap = QPixmap.fromImage(qt_image)
-        self.ui.label_liveVideo.setPixmap(pixmap)
+    # def update_liveVideo(self,frame):
+    #     rgb_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    #     h, w, ch = rgb_image.shape
+    #     bytes_per_line = ch * w
+    #     qt_image = QImage(rgb_image.data, w, h, bytes_per_line, QImage.Format_RGB888)
+    #     pixmap = QPixmap.fromImage(qt_image)
+    #     self.ui.label_liveVideo.setPixmap(pixmap)
 
-    def cameraUpdate(self):
-        camera_list=self.vision.get_camera_list()
-        self.ui.comboBox_camera.clear()
-        self.ui.comboBox_camera.addItems(camera_list)
-        print('相机列表更新完毕')        
+    # def cameraUpdate(self):
+    #     camera_list=self.vision.get_camera_list()
+    #     self.ui.comboBox_camera.clear()
+    #     self.ui.comboBox_camera.addItems(camera_list)
+    #     print('相机列表更新完毕')        
 
-    def cameraOpen(self):
-        if not self.vision.is_running:
-            self.vision.camera_index=int(self.ui.comboBox_camera.currentText())
-            self.vision.start()
-            self.vision.is_running=True
-            self.ui.pushButton_cameraOpen.setText('关闭')
-        else:
-            self.vision.is_running=False
-            self.ui.pushButton_cameraOpen.setText('打开')
-    def snap(self):
-        if self.vision.snap(self.teach.joint_cur_paras):
-            self.ui.textEdit_clibInfo.moveCursor(QTextCursor.End)
-            self.ui.textEdit_clibInfo.insertPlainText('>>>'+'成功保存第'+str(len(self.vision.handeye_joints))+'张图片及相应位姿!' + '\n')
-            self.ui.textEdit_clibInfo.moveCursor(QTextCursor.End)
-        else:
-            self.ui.textEdit_clibInfo.moveCursor(QTextCursor.End)
-            self.ui.textEdit_clibInfo.insertPlainText('>>>snap failed...' + '\n')
-            self.ui.textEdit_clibInfo.moveCursor(QTextCursor.End)
+    # def cameraOpen(self):
+    #     if not self.vision.is_running:
+    #         self.vision.camera_index=int(self.ui.comboBox_camera.currentText())
+    #         self.vision.start()
+    #         self.vision.is_running=True
+    #         self.ui.pushButton_cameraOpen.setText('关闭')
+    #     else:
+    #         self.vision.is_running=False
+    #         self.ui.pushButton_cameraOpen.setText('打开')
+    # def snap(self):
+    #     if self.vision.snap(self.teach.joint_cur_paras):
+    #         self.ui.textEdit_clibInfo.moveCursor(QTextCursor.End)
+    #         self.ui.textEdit_clibInfo.insertPlainText('>>>'+'成功保存第'+str(len(self.vision.handeye_joints))+'张图片及相应位姿!' + '\n')
+    #         self.ui.textEdit_clibInfo.moveCursor(QTextCursor.End)
+    #     else:
+    #         self.ui.textEdit_clibInfo.moveCursor(QTextCursor.End)
+    #         self.ui.textEdit_clibInfo.insertPlainText('>>>snap failed...' + '\n')
+    #         self.ui.textEdit_clibInfo.moveCursor(QTextCursor.End)
             
     # def clibRun(self): 
     #     if not self.ui.pushButton_cameraOpen.text()=='关闭':
@@ -932,167 +941,167 @@ class JIBot:
         self.ui.label_stick_joint.setVisible(False)
         self.ui.label_stick_cartesian.setVisible(True)
         
-    #抓取槽函数
-    def change_hl(self):
-        self.vision.hsv_lower[0]=int(self.ui.horizontalSlider_hl.value())
-        print('hl改变为 ',self.vision.hsv_lower[0])
-    def change_sl(self):
-        self.vision.hsv_lower[1]=int(self.ui.horizontalSlider_sl.value())
-        print('sl改变为 ',self.vision.hsv_lower[1])
-    def change_vl(self):
-        self.vision.hsv_lower[2]=int(self.ui.horizontalSlider_vl.value())
-        print('vl改变为 ',self.vision.hsv_lower[2])
-    def change_hu(self):
-        self.vision.hsv_upper[0]=int(self.ui.horizontalSlider_hu.value())
-        print('hu改变为 ',self.vision.hsv_upper[0])
-    def change_su(self):
-        self.vision.hsv_upper[1]=int(self.ui.horizontalSlider_su.value())
-        print('su改变为 ',self.vision.hsv_upper[1])
-    def change_vu(self):
-        self.vision.hsv_upper[2]=int(self.ui.horizontalSlider_vu.value())
-        print('vu改变为 ',self.vision.hsv_upper[2])
-    def savePickConfig(self):
-        if self.ui.lineEdit_targetLen.text():
-            self.vision.target_size[0]=int(self.ui.lineEdit_targetLen.text())
-        if self.ui.lineEdit_targetWid.text():
-            self.vision.target_size[1]=int(self.ui.lineEdit_targetWid.text())
-        if self.ui.lineEdit_placeX.text():
-            self.vision.place_pose[0]=int(self.ui.lineEdit_placeX.text())
-        if self.ui.lineEdit_placeY.text():
-            self.vision.place_pose[1]=int(self.ui.lineEdit_placeY.text())
-        print('成功修改夹取配置：',self.vision.target_size,'，',self.vision.place_pose)
-    def change_waitJoint(self):
-        # 创建一个询问对话框
-        confirmation = QMessageBox.question(self.ui, 'Confirmation', '确认修改waitJoint?', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-        if confirmation==QMessageBox.Yes:
-            # 深拷贝
-            deep_copy_of_one = copy.deepcopy(self.teach.joint_cur_paras)
-            self.vision.waitJoint=deep_copy_of_one
-            print('waitJoint改变为 ',self.vision.waitJoint)
-    def pick(self):
-        if self.vision.is_grasping==False:
+    # #抓取槽函数
+    # def change_hl(self):
+    #     self.vision.hsv_lower[0]=int(self.ui.horizontalSlider_hl.value())
+    #     print('hl改变为 ',self.vision.hsv_lower[0])
+    # def change_sl(self):
+    #     self.vision.hsv_lower[1]=int(self.ui.horizontalSlider_sl.value())
+    #     print('sl改变为 ',self.vision.hsv_lower[1])
+    # def change_vl(self):
+    #     self.vision.hsv_lower[2]=int(self.ui.horizontalSlider_vl.value())
+    #     print('vl改变为 ',self.vision.hsv_lower[2])
+    # def change_hu(self):
+    #     self.vision.hsv_upper[0]=int(self.ui.horizontalSlider_hu.value())
+    #     print('hu改变为 ',self.vision.hsv_upper[0])
+    # def change_su(self):
+    #     self.vision.hsv_upper[1]=int(self.ui.horizontalSlider_su.value())
+    #     print('su改变为 ',self.vision.hsv_upper[1])
+    # def change_vu(self):
+    #     self.vision.hsv_upper[2]=int(self.ui.horizontalSlider_vu.value())
+    #     print('vu改变为 ',self.vision.hsv_upper[2])
+    # def savePickConfig(self):
+    #     if self.ui.lineEdit_targetLen.text():
+    #         self.vision.target_size[0]=int(self.ui.lineEdit_targetLen.text())
+    #     if self.ui.lineEdit_targetWid.text():
+    #         self.vision.target_size[1]=int(self.ui.lineEdit_targetWid.text())
+    #     if self.ui.lineEdit_placeX.text():
+    #         self.vision.place_pose[0]=int(self.ui.lineEdit_placeX.text())
+    #     if self.ui.lineEdit_placeY.text():
+    #         self.vision.place_pose[1]=int(self.ui.lineEdit_placeY.text())
+    #     print('成功修改夹取配置：',self.vision.target_size,'，',self.vision.place_pose)
+    # def change_waitJoint(self):
+    #     # 创建一个询问对话框
+    #     confirmation = QMessageBox.question(self.ui, 'Confirmation', '确认修改waitJoint?', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+    #     if confirmation==QMessageBox.Yes:
+    #         # 深拷贝
+    #         deep_copy_of_one = copy.deepcopy(self.teach.joint_cur_paras)
+    #         self.vision.waitJoint=deep_copy_of_one
+    #         print('waitJoint改变为 ',self.vision.waitJoint)
+    # def pick(self):
+    #     if self.vision.is_grasping==False:
             
-            # 创建一个询问对话框
-            confirmation = QMessageBox.question(self.ui, 'Confirmation', '确认启动抓取?', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-            if confirmation==QMessageBox.Yes:
-                self.ui.textEdit_pickInfo.moveCursor(QTextCursor.End)
-                self.ui.textEdit_pickInfo.insertPlainText('>>>'+'启动视觉抓取程序...' + '\n')
-                self.ui.textEdit_pickInfo.moveCursor(QTextCursor.End)
-                #设置待命位置
-                time.sleep(1)
-                self.robot.send_command(self.vision.waitJoint,'1000')
-                time.sleep(1)
-                # uart.send_command(self.vision.waitJoint,'0500')
-                # time.sleep(1)
-                self.robot.set_grapper_pwm(1100)
-                time.sleep(1)
-                self.robot.set_grapper_pwm(1100)
-                self.vision.uart=self.robot #引用传参
-                self.vision.teach=self.teach#引用传参
-                self.vision.is_grasping=True#启动抓取，多线程
-                self.ui.pushButton_pick.setText('停止抓取')
-        else:
-            self.vision.is_grasping=False
-            self.ui.pushButton_pick.setText('启动抓取')
-            self.ui.textEdit_pickInfo.moveCursor(QTextCursor.End)
-            self.ui.textEdit_pickInfo.insertPlainText('>>>'+'已停止视觉抓取程序...' + '\n')
-            self.ui.textEdit_pickInfo.moveCursor(QTextCursor.End)
-            #设置待命位置
-            self.robot.send_command(self.vision.waitJoint,'0800')
-            time.sleep(0.02)
-            self.robot.send_command(self.vision.waitJoint,'0800')
-            time.sleep(1)
-            self.robot.set_grapper_pwm(1100)
+    #         # 创建一个询问对话框
+    #         confirmation = QMessageBox.question(self.ui, 'Confirmation', '确认启动抓取?', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+    #         if confirmation==QMessageBox.Yes:
+    #             self.ui.textEdit_pickInfo.moveCursor(QTextCursor.End)
+    #             self.ui.textEdit_pickInfo.insertPlainText('>>>'+'启动视觉抓取程序...' + '\n')
+    #             self.ui.textEdit_pickInfo.moveCursor(QTextCursor.End)
+    #             #设置待命位置
+    #             time.sleep(1)
+    #             self.robot.send_command(self.vision.waitJoint,'1000')
+    #             time.sleep(1)
+    #             # uart.send_command(self.vision.waitJoint,'0500')
+    #             # time.sleep(1)
+    #             self.robot.set_grapper_pwm(1100)
+    #             time.sleep(1)
+    #             self.robot.set_grapper_pwm(1100)
+    #             self.vision.uart=self.robot #引用传参
+    #             self.vision.teach=self.teach#引用传参
+    #             self.vision.is_grasping=True#启动抓取，多线程
+    #             self.ui.pushButton_pick.setText('停止抓取')
+    #     else:
+    #         self.vision.is_grasping=False
+    #         self.ui.pushButton_pick.setText('启动抓取')
+    #         self.ui.textEdit_pickInfo.moveCursor(QTextCursor.End)
+    #         self.ui.textEdit_pickInfo.insertPlainText('>>>'+'已停止视觉抓取程序...' + '\n')
+    #         self.ui.textEdit_pickInfo.moveCursor(QTextCursor.End)
+    #         #设置待命位置
+    #         self.robot.send_command(self.vision.waitJoint,'0800')
+    #         time.sleep(0.02)
+    #         self.robot.send_command(self.vision.waitJoint,'0800')
+    #         time.sleep(1)
+    #         self.robot.set_grapper_pwm(1100)
             
-    def update_grasp_info(self,info):
-        self.ui.textEdit_pickInfo.moveCursor(QTextCursor.End)
-        self.ui.textEdit_pickInfo.insertPlainText(info+ '\n')
-        self.ui.textEdit_pickInfo.moveCursor(QTextCursor.End)
-        self.update_all_lables()
-    def roiView(self):
-        if self.vision.is_roiViewing==False:
-            self.vision.is_roiViewing=True
-            self.ui.pushButton_roi.setText('关闭预览')
-        else:
-            self.vision.is_roiViewing=False
-            self.ui.pushButton_roi.setText('开启预览')
+    # def update_grasp_info(self,info):
+    #     self.ui.textEdit_pickInfo.moveCursor(QTextCursor.End)
+    #     self.ui.textEdit_pickInfo.insertPlainText(info+ '\n')
+    #     self.ui.textEdit_pickInfo.moveCursor(QTextCursor.End)
+    #     self.update_all_lables()
+    # def roiView(self):
+    #     if self.vision.is_roiViewing==False:
+    #         self.vision.is_roiViewing=True
+    #         self.ui.pushButton_roi.setText('关闭预览')
+    #     else:
+    #         self.vision.is_roiViewing=False
+    #         self.ui.pushButton_roi.setText('开启预览')
             
-    #跟踪槽函数
-    def change_hl_2(self):
-        self.vision.hsv_lower_2[0]=int(self.ui.horizontalSlider_hl_2.value())
-        print('hl_2改变为 ',self.vision.hsv_lower_2[0])
-    def change_sl_2(self):
-        self.vision.hsv_lower_2[1]=int(self.ui.horizontalSlider_sl_2.value())
-        print('sl_2改变为 ',self.vision.hsv_lower_2[1])
-    def change_vl_2(self):
-        self.vision.hsv_lower_2[2]=int(self.ui.horizontalSlider_vl_2.value())
-        print('vl_2改变为 ',self.vision.hsv_lower_2[2])
-    def change_hu_2(self):
-        self.vision.hsv_upper_2[0]=int(self.ui.horizontalSlider_hu_2.value())
-        print('hu_2改变为 ',self.vision.hsv_upper_2[0])
-    def change_su_2(self):
-        self.vision.hsv_upper_2[1]=int(self.ui.horizontalSlider_su_2.value())
-        print('su_2改变为 ',self.vision.hsv_upper_2[1])
-    def change_vu_2(self):
-        self.vision.hsv_upper_2[2]=int(self.ui.horizontalSlider_vu_2.value())
-        print('vu_2改变为 ',self.vision.hsv_upper_2[2])
+    # #跟踪槽函数
+    # def change_hl_2(self):
+    #     self.vision.hsv_lower_2[0]=int(self.ui.horizontalSlider_hl_2.value())
+    #     print('hl_2改变为 ',self.vision.hsv_lower_2[0])
+    # def change_sl_2(self):
+    #     self.vision.hsv_lower_2[1]=int(self.ui.horizontalSlider_sl_2.value())
+    #     print('sl_2改变为 ',self.vision.hsv_lower_2[1])
+    # def change_vl_2(self):
+    #     self.vision.hsv_lower_2[2]=int(self.ui.horizontalSlider_vl_2.value())
+    #     print('vl_2改变为 ',self.vision.hsv_lower_2[2])
+    # def change_hu_2(self):
+    #     self.vision.hsv_upper_2[0]=int(self.ui.horizontalSlider_hu_2.value())
+    #     print('hu_2改变为 ',self.vision.hsv_upper_2[0])
+    # def change_su_2(self):
+    #     self.vision.hsv_upper_2[1]=int(self.ui.horizontalSlider_su_2.value())
+    #     print('su_2改变为 ',self.vision.hsv_upper_2[1])
+    # def change_vu_2(self):
+    #     self.vision.hsv_upper_2[2]=int(self.ui.horizontalSlider_vu_2.value())
+    #     print('vu_2改变为 ',self.vision.hsv_upper_2[2])
 
-    def saveTrackConfig(self):
-        if self.ui.lineEdit_targetLen_2.text():
-            self.vision.target_size_2[0]=int(self.ui.lineEdit_targetLen_2.text())
-        if self.ui.lineEdit_targetWid_2.text():
-            self.vision.target_size_2[1]=int(self.ui.lineEdit_targetWid_2.text())
-        if self.ui.lineEdit_dis.text():
-            self.vision.hold_dis=int(self.ui.lineEdit_dis.text())
-        if self.ui.lineEdit_lamda.text():
-            self.vision.lamda=float(self.ui.lineEdit_lamda.text())
-        print('成功修改跟踪配置：',self.vision.target_size_2,'，',self.vision.hold_dis,'，',self.vision.lamda)
+    # def saveTrackConfig(self):
+    #     if self.ui.lineEdit_targetLen_2.text():
+    #         self.vision.target_size_2[0]=int(self.ui.lineEdit_targetLen_2.text())
+    #     if self.ui.lineEdit_targetWid_2.text():
+    #         self.vision.target_size_2[1]=int(self.ui.lineEdit_targetWid_2.text())
+    #     if self.ui.lineEdit_dis.text():
+    #         self.vision.hold_dis=int(self.ui.lineEdit_dis.text())
+    #     if self.ui.lineEdit_lamda.text():
+    #         self.vision.lamda=float(self.ui.lineEdit_lamda.text())
+    #     print('成功修改跟踪配置：',self.vision.target_size_2,'，',self.vision.hold_dis,'，',self.vision.lamda)
     
-    def change_waitJoint_2(self):
-        # 创建一个询问对话框
-        confirmation = QMessageBox.question(self.ui, 'Confirmation', '确认修改waitJoint?', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-        if confirmation==QMessageBox.Yes:
-            # 深拷贝
-            deep_copy_of_one = copy.deepcopy(self.teach.joint_cur_paras)
-            self.vision.waitJoint_2=deep_copy_of_one
-            print('waitJoint_2改变为 ',self.vision.waitJoint_2)
-    def track(self):
-        if self.vision.is_tracking ==False:
-            confirmation = QMessageBox.question(self.ui, 'Confirmation', '确认开始追踪物体?', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-            if confirmation==QMessageBox.Yes:
-                self.vision.uart_2=self.robot
-                self.vision.teach_2=self.teach
-                #设置待命位置
-                points=[self.teach.joint_cur_paras+[1100],self.vision.waitJoint_2+[1100]]
-                print('points：',points)
-                self.teach.joint_point_teach(self.robot,points)
-                time.sleep(1)
-                self.vision.is_tracking=True
-                self.ui.pushButton_track.setText('停止跟踪')
-                self.ui.textEdit_trackInfo.moveCursor(QTextCursor.End)
-                self.ui.textEdit_trackInfo.insertPlainText('>>>'+'开始物体追踪...' + '\n')
-                self.ui.textEdit_trackInfo.moveCursor(QTextCursor.End)
-        else:
-            confirmation = QMessageBox.question(self.ui, 'Confirmation', '确认停止追踪物体?', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-            if confirmation==QMessageBox.Yes:
-                self.vision.is_tracking=False
-                self.ui.pushButton_track.setText('开始跟踪')
-                self.ui.textEdit_trackInfo.moveCursor(QTextCursor.End)
-                self.ui.textEdit_trackInfo.insertPlainText('>>>'+'终止物体追踪...' + '\n')
-                self.ui.textEdit_trackInfo.moveCursor(QTextCursor.End)
-    def update_track_info(self,info):
-        self.ui.textEdit_trackInfo.moveCursor(QTextCursor.End)
-        self.ui.textEdit_trackInfo.insertPlainText(info+ '\n')
-        self.ui.textEdit_trackInfo.moveCursor(QTextCursor.End)
-        self.update_all_lables()
+    # def change_waitJoint_2(self):
+    #     # 创建一个询问对话框
+    #     confirmation = QMessageBox.question(self.ui, 'Confirmation', '确认修改waitJoint?', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+    #     if confirmation==QMessageBox.Yes:
+    #         # 深拷贝
+    #         deep_copy_of_one = copy.deepcopy(self.teach.joint_cur_paras)
+    #         self.vision.waitJoint_2=deep_copy_of_one
+    #         print('waitJoint_2改变为 ',self.vision.waitJoint_2)
+    # def track(self):
+    #     if self.vision.is_tracking ==False:
+    #         confirmation = QMessageBox.question(self.ui, 'Confirmation', '确认开始追踪物体?', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+    #         if confirmation==QMessageBox.Yes:
+    #             self.vision.uart_2=self.robot
+    #             self.vision.teach_2=self.teach
+    #             #设置待命位置
+    #             points=[self.teach.joint_cur_paras+[1100],self.vision.waitJoint_2+[1100]]
+    #             print('points：',points)
+    #             self.teach.joint_point_teach(self.robot,points)
+    #             time.sleep(1)
+    #             self.vision.is_tracking=True
+    #             self.ui.pushButton_track.setText('停止跟踪')
+    #             self.ui.textEdit_trackInfo.moveCursor(QTextCursor.End)
+    #             self.ui.textEdit_trackInfo.insertPlainText('>>>'+'开始物体追踪...' + '\n')
+    #             self.ui.textEdit_trackInfo.moveCursor(QTextCursor.End)
+    #     else:
+    #         confirmation = QMessageBox.question(self.ui, 'Confirmation', '确认停止追踪物体?', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+    #         if confirmation==QMessageBox.Yes:
+    #             self.vision.is_tracking=False
+    #             self.ui.pushButton_track.setText('开始跟踪')
+    #             self.ui.textEdit_trackInfo.moveCursor(QTextCursor.End)
+    #             self.ui.textEdit_trackInfo.insertPlainText('>>>'+'终止物体追踪...' + '\n')
+    #             self.ui.textEdit_trackInfo.moveCursor(QTextCursor.End)
+    # def update_track_info(self,info):
+    #     self.ui.textEdit_trackInfo.moveCursor(QTextCursor.End)
+    #     self.ui.textEdit_trackInfo.insertPlainText(info+ '\n')
+    #     self.ui.textEdit_trackInfo.moveCursor(QTextCursor.End)
+    #     self.update_all_lables()
         
-    def roiView_2(self):
-        if self.vision.is_roiViewing_2==False:
-            self.vision.is_roiViewing_2=True
-            self.ui.pushButton_roi_2.setText('关闭预览')
-        else:
-            self.vision.is_roiViewing_2=False
-            self.ui.pushButton_roi_2.setText('开启预览')
+    # def roiView_2(self):
+    #     if self.vision.is_roiViewing_2==False:
+    #         self.vision.is_roiViewing_2=True
+    #         self.ui.pushButton_roi_2.setText('关闭预览')
+    #     else:
+    #         self.vision.is_roiViewing_2=False
+    #         self.ui.pushButton_roi_2.setText('开启预览')
     
         
 if __name__ == '__main__':
