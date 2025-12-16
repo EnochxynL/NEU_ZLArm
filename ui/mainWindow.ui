@@ -899,7 +899,7 @@
                    </item>
                    <item row="1" column="2">
                     <property name="text">
-                     <string>80</string>
+                     <string>-50</string>
                     </property>
                    </item>
                    <item row="1" column="3">
@@ -949,7 +949,7 @@
                    </item>
                    <item row="2" column="5">
                     <property name="text">
-                     <string>1200</string>
+                     <string>2000</string>
                     </property>
                    </item>
                    <item row="3" column="0">
@@ -964,7 +964,7 @@
                    </item>
                    <item row="3" column="2">
                     <property name="text">
-                     <string>80</string>
+                     <string>-50</string>
                     </property>
                    </item>
                    <item row="3" column="3">
@@ -979,7 +979,7 @@
                    </item>
                    <item row="3" column="5">
                     <property name="text">
-                     <string>2000</string>
+                     <string>1200</string>
                     </property>
                    </item>
                   </widget>
@@ -1760,9 +1760,9 @@
  </resources>
  <connections/>
  <buttongroups>
-  <buttongroup name="buttonGroup_4"/>
   <buttongroup name="buttonGroup_3"/>
   <buttongroup name="buttonGroup"/>
   <buttongroup name="buttonGroup_2"/>
+  <buttongroup name="buttonGroup_4"/>
  </buttongroups>
 </ui>
