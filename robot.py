@@ -37,12 +37,12 @@ class Robot:
         if self.sim is not None: self.sim.step_sim(joint_angles)
         if self.hard is not None: self.hard.send_command(joint_angles, time)
 
-    def set_grapper_pwm(self, pwm: int, time: str = '0500'):
+    def set_grapper_pwm(self, pwm: int, _time: str = '0500'):
         '''
         设置夹爪舵机PWM值
         '''
         if self.sim is not None: self.sim.set_grapper(pwm)
-        if self.hard is not None: self.hard.set_grapper_pwm(pwm, time)
+        if self.hard is not None: self.hard.set_grapper_pwm(pwm, _time)
         
     def servo_reset(self):
         self.send_command([0,90,0,0,0],time='1000')
