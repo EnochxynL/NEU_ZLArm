@@ -79,6 +79,8 @@ class JIBot:
         self.ui.pushButton_save.clicked.connect(self.save_to_excel)
         self.ui.pushButton_open.clicked.connect(self.open_from_excel)
         self.ui.pushButton_delete.clicked.connect(self.delete_row)
+        self.ui.pushButton_add.clicked.connect(self.add_row)
+        self.ui.pushButton_remove.clicked.connect(self.remove_row)
         #####关节空间
         self.ui.radioButton_speedLow_2.toggled.connect(self.speed_low_2)
         self.ui.radioButton_speedHigh_2.toggled.connect(self.speed_high_2)
@@ -235,7 +237,22 @@ class JIBot:
             self._key_pressed.discard(func)
         # 如果想让别的按键继续正常响应，就保留下面这句：
         event.accept()   
+
+    def add_row(self):
+        # 将新行添加到表格的末尾
+        self.ui.table_cartesian.insertRow(self.ui.table_cartesian.rowCount())
+        self.ui.table_cartesian.setItem(self.ui.table_cartesian.rowCount()-1, 0, QTableWidgetItem("{:.2f}".format(self.teach.cartesian_cur_paras[0])))
+        self.ui.table_cartesian.setItem(self.ui.table_cartesian.rowCount()-1, 1, QTableWidgetItem("{:.2f}".format(self.teach.cartesian_cur_paras[1])))
+        self.ui.table_cartesian.setItem(self.ui.table_cartesian.rowCount()-1, 2, QTableWidgetItem("{:.2f}".format(self.teach.cartesian_cur_paras[2])))
+        self.ui.table_cartesian.setItem(self.ui.table_cartesian.rowCount()-1, 3, QTableWidgetItem("{:.2f}".format(self.teach.cartesian_cur_paras[3])))
+        self.ui.table_cartesian.setItem(self.ui.table_cartesian.rowCount()-1, 4, QTableWidgetItem("{:.2f}".format(self.teach.cartesian_cur_paras[4])))
+        self.ui.table_cartesian.setItem(self.ui.table_cartesian.rowCount()-1, 5, QTableWidgetItem("{:.2f}".format(self.teach.cur_grapper_pwm)))
         
+    def remove_row(self):
+        # 删除表格的最后一行
+        if self.ui.table_cartesian.rowCount() > 0:
+            self.ui.table_cartesian.removeRow(self.ui.table_cartesian.rowCount() - 1)
+
     def update_all_lables(self):
         #笛卡尔tab页
         self.ui.label_x.setText("{:.2f}".format(self.teach.cartesian_cur_paras[0]))

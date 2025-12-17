@@ -113,17 +113,18 @@
                      </widget>
                     </item>
                     <item>
-                     <spacer name="horizontalSpacer_3">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
+                     <widget class="QPushButton" name="pushButton_add">
+                      <property name="text">
+                       <string>添加一行</string>
                       </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="pushButton_remove">
+                      <property name="text">
+                       <string>移除一行</string>
                       </property>
-                     </spacer>
+                     </widget>
                     </item>
                     <item>
                      <widget class="QLabel" name="label_11">
@@ -1769,9 +1770,9 @@
  </resources>
  <connections/>
  <buttongroups>
-  <buttongroup name="buttonGroup_2"/>
-  <buttongroup name="buttonGroup"/>
-  <buttongroup name="buttonGroup_3"/>
   <buttongroup name="buttonGroup_4"/>
+  <buttongroup name="buttonGroup"/>
+  <buttongroup name="buttonGroup_2"/>
+  <buttongroup name="buttonGroup_3"/>
  </buttongroups>
 </ui>
